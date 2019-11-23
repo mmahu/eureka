@@ -21,7 +21,7 @@ pipeline {
         stage('deploy') {
             steps {
                 sh 'docker service rm mmahu-eureka || true'
-                sh 'docker service create --limit-memory 512M --no-resolve-image --replicas 1 --name mmahu-eureka -p 8989:8989 mmahu-main:5000/mmahu-eureka:1.0.$BUILD_NUMBER'
+                sh 'docker service create --limit-memory 512M --no-resolve-image --replicas 1 --name mmahu-eureka -p 8761:8761 mmahu-main:5000/mmahu-eureka:1.0.$BUILD_NUMBER'
             }
         }
     }
