@@ -3,4 +3,4 @@ spring:
     name: mmahu-eureka
   cloud:
     config:
-      uri: http://mmahu-main:8888
+      uri: http://mmahu-config:8080
