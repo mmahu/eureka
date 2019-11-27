@@ -18,7 +18,7 @@ pipeline {
         }
         stage('fetch') {
             steps {
-                git url: 'https://github.com/mmahu/config.git', branch: 'master'
+                git url: 'https://github.com/mmahu/eureka.git', branch: 'master'
             }
         }
         stage('build') {
