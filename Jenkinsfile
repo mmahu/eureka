@@ -10,7 +10,7 @@ pipeline {
             steps {
                 script {
                     name = "e-eureka"
-                    port = "9761:9761"
+                    port = "8761:8761"
                     registry = "master:5000"
                     buildNumber = "1.0.$BUILD_NUMBER"
                 }
