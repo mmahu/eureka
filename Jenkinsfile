@@ -1,33 +1,47 @@
+def name=""
+def port=""
+def registry=""
+def buildNumber=""
+
 pipeline {
     agent any
     stages {
+        stage('init') {
+            steps {
+                script {
+                    name = "e-eureka"
+                    port = "9761:9761"
+                    registry = "master:5000"
+                    buildNumber = "1.0.$BUILD_NUMBER"
+                }
+            }
+        }
         stage('fetch') {
             steps {
-                git url: 'https://github.com/mmahu/eureka.git', branch: 'master'
+                git url: 'https://github.com/mmahu/config.git', branch: 'master'
             }
         }
         stage('build') {
             steps {
                 sh 'chmod +x gradlew'
-                sh './gradlew clean assemble -PbuildNumber=1.0.$BUILD_NUMBER'
+                sh "echo ${buildNumber}"
+                sh "./gradlew clean assemble -PbuildNumber=${buildNumber}"
             }
         }
         stage('imaging') {
             steps {
-                sh 'docker build . -t mmahu-main:5000/mmahu-eureka:1.0.$BUILD_NUMBER'
-                sh 'docker push mmahu-main:5000/mmahu-eureka'
+                sh "docker build . -t ${registry}/${name}:${buildNumber}"
+                sh "docker push ${registry}/${name}"
             }
         }
         stage('deploy') {
             steps {
-                sh 'docker service rm mmahu-eureka || true'
-                sh 'docker service create \
-                    --limit-memory 512M \
-                    --hostname mmahu-eureka \
+                sh "docker service rm ${name} || true"
+                sh "docker service create \
+                    --name ${name} \
                     --no-resolve-image \
-                    --name mmahu-eureka \
-                    --publish published=8761,target=8761 \
-                    mmahu-main:5000/mmahu-eureka:1.0.$BUILD_NUMBER'
+                    --publish ${port} \
+                    ${registry}/${name}:${buildNumber}"
             }
         }
     }
