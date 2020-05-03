@@ -43,5 +43,10 @@ pipeline {
                     ${registry}/${name}:${buildNumber}"
             }
         }
+        stage('clean up') {
+            steps {
+                sh "docker image prune --all -f"
+            }
+        }
     }
 }
